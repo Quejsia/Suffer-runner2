@@ -1,14 +1,13 @@
 /*
- * SHORE DASH — swipe-first mobile controls
+ * SHORE DASH — swipe-first mobile input
  *
- * Experimental input layer:
- *   Tap            -> jump
- *   Swipe up       -> jump
- *   Swipe left     -> quick dodge left
- *   Swipe right    -> quick dodge right
+ * Touch gestures are intentionally simple:
+ *   Tap             -> jump
+ *   Swipe up        -> jump
+ *   Swipe left/right-> quick directional dodge
+ *   Swipe down      -> slide under low hazards
  *
- * The old joystick/jump-button DOM hooks remain hidden for compatibility,
- * but this layer intentionally makes the canvas itself the control surface.
+ * The canvas is the control surface; legacy on-screen controls remain hidden.
  */
 (() => {
   const canvas = document.getElementById('c');
@@ -25,7 +24,6 @@
   let startY = 0;
   let startTime = 0;
   let dodgeTimer = null;
-  let previousMoveDir = 0;
 
   function stopDodge() {
     if (dodgeTimer) {
@@ -37,15 +35,15 @@
 
   function dodge(direction) {
     if (typeof state === 'undefined' || state !== 'playing') return;
-    if (typeof player !== 'undefined' && typeof moveDir !== 'undefined') {
-      const nudge = 54;
-      player.x += direction * nudge;
+    if (typeof player === 'undefined' || typeof moveDir === 'undefined') return;
+
+    player.x += direction * 54;
+    if (typeof W !== 'undefined' && typeof player.w !== 'undefined') {
       player.x = Math.max(8, Math.min(W - player.w - 8, player.x));
-      moveDir = direction * DODGE_SPEED_MULTIPLIER;
-      previousMoveDir = moveDir;
-      if (dodgeTimer) clearTimeout(dodgeTimer);
-      dodgeTimer = setTimeout(stopDodge, DODGE_TIME);
     }
+    moveDir = direction * DODGE_SPEED_MULTIPLIER;
+    if (dodgeTimer) clearTimeout(dodgeTimer);
+    dodgeTimer = setTimeout(stopDodge, DODGE_TIME);
   }
 
   function handleGesture(endX, endY, endTime) {
@@ -56,7 +54,6 @@
 
     if (typeof state === 'undefined' || state !== 'playing') return;
 
-    // A short touch anywhere on the game surface is the jump action.
     if (distance <= TAP_MAX_DISTANCE && elapsed <= TAP_MAX_TIME) {
       if (typeof jump === 'function') jump();
       return;
@@ -68,6 +65,8 @@
       dodge(dx > 0 ? 1 : -1);
     } else if (dy < 0) {
       if (typeof jump === 'function') jump();
+    } else {
+      if (typeof slide === 'function') slide();
     }
   }
 
