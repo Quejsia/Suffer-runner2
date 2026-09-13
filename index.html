@@ -26,10 +26,11 @@
       <div class="subtitle">Endless Beach Runner</div>
       <div class="final-score" id="finalScore">SCORE: 0</div>
       <button id="startBtn" type="button">CATCH A WAVE</button>
-      <div class="hint">SPACE / TAP to jump • Double jump available!</div>
+      <div class="hint">TAP to jump • SWIPE left/right to dodge • Swipe up to jump</div>
     </div>
 
-    <div id="mobileControls">
+    <!-- Legacy DOM hooks kept hidden so the existing game loop remains compatible. -->
+    <div id="mobileControls" aria-hidden="true">
       <div id="joystick" aria-label="Move">
         <div id="stick"></div>
       </div>
@@ -38,6 +39,7 @@
   </div>
 
   <script src="orientation-fix.js"></script>
+  <script src="swipe-controls.js"></script>
   <script src="game.js"></script>
 </body>
 </html>
