@@ -43,7 +43,6 @@ function formatScore(value) {
 }
 
 function setHud() {
-  // DOM HUD is intentionally kept tiny and above the canvas by CSS.
   if (scoreEl) scoreEl.textContent = formatScore(score);
   if (livesEl) livesEl.querySelectorAll('.heart').forEach((h, i) => {
     h.style.opacity = i < lives ? '1' : '.2';
@@ -75,6 +74,8 @@ function startGame() {
   setHud();
   if (comboEl) comboEl.style.opacity = '0';
   finalScoreEl.style.display = 'none';
+  overlay.querySelector('h1').textContent = 'SHORE DASH';
+  overlay.querySelector('.subtitle').textContent = 'Endless Beach Runner';
   startBtn.textContent = 'CATCH A WAVE';
   overlay.classList.add('hidden');
 }
@@ -142,10 +143,12 @@ function update(dt) {
   for (const c of collectibles) { c.x -= speed*dt; c.phase += dt*5; }
   while (collectibles.length && collectibles[0].x < -80) collectibles.shift();
 
-  const box = {x:player.x,y:player.y,w:player.w,h:player.h};
+  const box = {x:player.x+7,y:player.y+5,w:player.w-14,h:player.h-9};
   if (player.invincible <= 0) {
     for (let i=0;i<obstacles.length;i++) {
-      if (!hit(box, obstacles[i])) continue;
+      const o = obstacles[i];
+      const obstacleBox = {x:o.x+4,y:o.y+3,w:Math.max(1,o.w-8),h:Math.max(1,o.h-6)};
+      if (!hit(box, obstacleBox, 0)) continue;
       lives--;
       player.invincible = 1.25;
       player.vy = -470;
@@ -159,14 +162,16 @@ function update(dt) {
   }
 
   for (const c of collectibles) {
-    if (c.x < -50 || !hit(box,{x:c.x,y:c.y,w:c.w,h:c.h},2)) continue;
+    if (c.x < -50 || !hit(box,{x:c.x+2,y:c.y+2,w:c.w-4,h:c.h-4},0)) continue;
     const points = c.type==='star' ? 50 : c.type==='coin' ? 20 : 10;
+    const pickupX = c.x + 10;
+    const pickupY = c.y + 10;
     c.x = -200;
     combo++;
     comboTimer = 1.4;
     score += points + (combo >= 3 ? Math.min(50,combo*5) : 0);
     const color = c.type==='star' ? '#06d6a0' : c.type==='coin' ? '#ffd166' : '#ff9f43';
-    for (let k=0;k<10;k++) particle(c.x+10,c.y+10,(Math.random()-.5)*260,(Math.random()-.5)*260,.45,color,2+Math.random()*2);
+    for (let k=0;k<10;k++) particle(pickupX,pickupY,(Math.random()-.5)*260,(Math.random()-.5)*260,.45,color,2+Math.random()*2);
     if (combo >= 2) showCombo(`NICE! ×${combo}`);
   }
 
@@ -174,7 +179,7 @@ function update(dt) {
   else { combo = 0; if (comboEl) comboEl.style.opacity='0'; }
 
   for (const p of particles) { p.x += p.vx*dt; p.y += p.vy*dt; p.vy += 700*dt; p.life -= dt; }
-  for (let i=particles.length-1;i>=0;i--) if (particles[i].life<=0) particles.splice(i,1);
+  for (let i=particles.length-1;i>=0;i--) if(particles[i].life<=0) particles.splice(i,1);
 
   setHud();
 }
@@ -221,7 +226,7 @@ function drawPlayer(){
   const x=player.x,y=player.y;
   ctx.save();
   ctx.fillStyle='#06d6a0'; ctx.shadowColor='#06d6a0'; ctx.shadowBlur=10; ctx.beginPath();ctx.ellipse(x+20,y+50,26,6,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
-  ctx.fillStyle='#ff6b6b';ctx.beginPath();ctx.roundRect?ctx.roundRect(x+8,y+20,24,27,4):(ctx.rect(x+8,y+20,24,27));ctx.fill();
+  ctx.fillStyle='#ff6b6b';ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x+8,y+20,24,27,4); else ctx.rect(x+8,y+20,24,27); ctx.fill();
   ctx.fillStyle='#ffd6b0';ctx.beginPath();ctx.arc(x+20,y+12,9,0,Math.PI*2);ctx.fill();
   ctx.fillStyle='#3d2b1f';ctx.beginPath();ctx.arc(x+20,y+9,8,Math.PI,Math.PI*2);ctx.fill();
   ctx.fillStyle='#1a1a2e';ctx.beginPath();ctx.arc(x+17,y+14,1.5,0,Math.PI*2);ctx.arc(x+23,y+14,1.5,0,Math.PI*2);ctx.fill();
@@ -267,11 +272,11 @@ canvas.addEventListener('pointerdown', e=>{if(state==='playing' && e.pointerType
 document.addEventListener('keydown', e=>{if(e.code==='Space'||e.code==='ArrowUp'||e.code==='KeyW'){e.preventDefault();jump();}});
 
 const joystick=$('joystick');const stick=$('stick');const jumpBtn=$('jumpBtn');
-function resetJoystick(){joystickId=null;moveDir=0;if(stick){stick.style.left='16px';stick.style.top='16px';}}
-function joyMove(e){const r=joystick.getBoundingClientRect();const dx=e.clientX-(r.left+r.width/2);const dy=e.clientY-(r.top+r.height/2);const max=Math.max(18,(r.width-30)/2);const x=Math.max(-max,Math.min(max,dx));const y=Math.max(-max,Math.min(max,dy));moveDir=x/max;stick.style.left=`calc(50% + ${x}px - 12px)`;stick.style.top=`calc(50% + ${y}px - 12px)`;}
+function resetJoystick(){joystickId=null;moveDir=0;if(stick){stick.style.left='50%';stick.style.top='50%';stick.style.transform='translate(-50%,-50%)';}}
+function joyMove(e){const r=joystick.getBoundingClientRect();const dx=e.clientX-(r.left+r.width/2);const dy=e.clientY-(r.top+r.height/2);const max=Math.max(12,(r.width-30)/2);const x=Math.max(-max,Math.min(max,dx));const y=Math.max(-max,Math.min(max,dy));moveDir=x/max;stick.style.left=`calc(50% + ${x}px)`;stick.style.top=`calc(50% + ${y}px)`;stick.style.transform='translate(-50%,-50%)';}
 joystick.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();joystickId=e.pointerId;joystick.setPointerCapture(e.pointerId);joyMove(e);});
 joystick.addEventListener('pointermove',e=>{if(e.pointerId===joystickId){e.preventDefault();joyMove(e);}});
-joystick.addEventListener('pointerup',resetJoystick);joystick.addEventListener('pointercancel',resetJoystick);
+joystick.addEventListener('pointerup',resetJoystick);joystick.addEventListener('pointercancel',resetJoystick);joystick.addEventListener('lostpointercapture',resetJoystick);
 jumpBtn.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();jump();});
 window.addEventListener('blur',resetJoystick);document.addEventListener('visibilitychange',()=>{if(document.hidden){resetJoystick();accumulator=0;lastTime=performance.now();}});
 
