@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="gameWrapper">
-    <canvas id="c" width="800" height="400" aria-label="Shore Dash game"></canvas>
+    <canvas id="c" aria-label="Shore Dash 3D game"></canvas>
 
     <div id="ui" aria-hidden="true">
       <div id="scoreDisplay">0</div>
@@ -23,23 +23,14 @@
 
     <div id="overlay">
       <h1>SHORE DASH</h1>
-      <div class="subtitle">Endless Beach Runner</div>
+      <div class="subtitle">3D Endless Beach Runner</div>
       <div class="final-score" id="finalScore">SCORE: 0</div>
       <button id="startBtn" type="button">CATCH A WAVE</button>
-      <div class="hint">TAP to jump • SWIPE left/right to dodge • Swipe up to jump</div>
-    </div>
-
-    <!-- Legacy DOM hooks kept hidden so the existing game loop remains compatible. -->
-    <div id="mobileControls" aria-hidden="true">
-      <div id="joystick" aria-label="Move">
-        <div id="stick"></div>
-      </div>
-      <button id="jumpBtn" type="button">JUMP</button>
+      <div class="hint">TAP = JUMP • SWIPE ↑ = JUMP • SWIPE ↓ = SLIDE • SWIPE ← → = DODGE</div>
     </div>
   </div>
 
   <script src="orientation-fix.js"></script>
-  <script src="swipe-controls.js"></script>
-  <script src="game.js"></script>
+  <script type="module" src="game-3d.js"></script>
 </body>
 </html>
