@@ -17,19 +17,14 @@ canvas{display:block;position:relative;width:100%;height:100%;z-index:1;touch-ac
 #overlay h1{font-family:'Bangers',cursive;font-size:clamp(2.1rem,10vw,3.6rem);letter-spacing:4px;color:var(--sun);text-shadow:0 0 24px rgba(255,209,102,.75),3px 3px 0 rgba(0,0,0,.5);line-height:1;margin-bottom:5px}
 #overlay .subtitle{font-size:.64rem;color:var(--ocean-light);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;font-weight:700}
 #overlay .final-score{font-family:'Bangers',cursive;font-size:.95rem;color:var(--accent);letter-spacing:1px;margin-bottom:12px;display:none;line-height:1.05;max-width:92vw}
-#startBtn,#jumpBtn{font-family:'Bangers',cursive;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-#startBtn{background:var(--sun);color:#1a1a2e;border:0;font-size:1rem;letter-spacing:2px;padding:9px 24px;border-radius:50px;transition:transform .15s,box-shadow .15s;box-shadow:0 5px 18px rgba(255,209,102,.45);pointer-events:all}
+#startBtn{font-family:'Bangers',cursive;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;background:var(--sun);color:#1a1a2e;border:0;font-size:1rem;letter-spacing:2px;padding:9px 24px;border-radius:50px;transition:transform .15s,box-shadow .15s;box-shadow:0 5px 18px rgba(255,209,102,.45);pointer-events:all}
 #startBtn:hover{transform:scale(1.04) translateY(-1px);box-shadow:0 8px 24px rgba(255,209,102,.65)}
-.hint{margin-top:9px;font-size:.55rem;color:rgba(255,255,255,.5);letter-spacing:.5px}
-#mobileControls{position:absolute;bottom:max(7px,env(safe-area-inset-bottom));left:0;right:0;display:none;justify-content:space-between;align-items:end;padding:0 10px;pointer-events:none;z-index:30}
-#joystick{width:60px;height:60px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:50%;position:relative;pointer-events:all;touch-action:none}
-#stick{width:24px;height:24px;background:rgba(255,255,255,.88);border-radius:50%;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 3px 10px rgba(0,0,0,.3);pointer-events:none}
-#jumpBtn{width:68px;height:42px;border-radius:15px;background:var(--sun);color:#1a1a2e;border:2px solid rgba(255,255,255,.25);font-size:.92rem;letter-spacing:1px;box-shadow:0 4px 14px rgba(0,0,0,.3);pointer-events:all}
-#jumpBtn:active{transform:scale(.94)}
+.hint{margin-top:9px;font-size:.55rem;color:rgba(255,255,255,.58);letter-spacing:.5px;max-width:90%;line-height:1.3}
+
+/* Swipe-first experiment: the old joystick and jump button are intentionally invisible. */
+#mobileControls{display:none!important;pointer-events:none!important;visibility:hidden!important}
+
 @media (max-width:768px){#gameWrapper{width:100vw;border-radius:0;box-shadow:none}}
-@media (pointer:coarse),(hover:none){#mobileControls{display:flex}}
-@media (orientation:landscape) and (pointer:coarse){#ui{display:flex!important;visibility:visible!important;z-index:200!important}#mobileControls{display:flex!important;visibility:visible!important;z-index:150!important;bottom:max(8px,env(safe-area-inset-bottom));padding:0 12px}#scoreDisplay,#livesDisplay{font-size:1rem}#joystick{width:60px;height:60px}#jumpBtn{width:68px;height:42px}}
-@media (max-width:430px){#ui{padding:5px 7px}#scoreDisplay{font-size:.9rem;padding:3px 5px;min-width:36px}.heart{font-size:.7rem}#livesDisplay{padding:3px 4px}#comboDisplay{top:29px;font-size:.75rem}#overlay h1{font-size:2rem}#overlay .subtitle{font-size:.58rem;margin-bottom:11px}#overlay .final-score{font-size:.85rem;margin-bottom:10px}#startBtn{font-size:.9rem;padding:8px 20px}.hint{font-size:.5rem;margin-top:8px}#joystick{width:54px;height:54px}#stick{width:22px;height:22px}#jumpBtn{width:62px;height:38px;font-size:.85rem}}
-@media (orientation:portrait) and (pointer:coarse){#overlay:after{content:'Rotate your device for the best experience';position:absolute;bottom:12px;color:rgba(255,255,255,.35);font-size:.58rem}}
+@media (max-width:430px){#ui{padding:5px 7px}#scoreDisplay{font-size:.9rem;padding:3px 5px;min-width:36px}.heart{font-size:.7rem}#livesDisplay{padding:3px 4px}#comboDisplay{top:29px;font-size:.75rem}#overlay h1{font-size:2rem}#overlay .subtitle{font-size:.58rem;margin-bottom:11px}#overlay .final-score{font-size:.85rem;margin-bottom:10px}#startBtn{font-size:.9rem;padding:8px 20px}.hint{font-size:.5rem;margin-top:8px}}
+@media (orientation:portrait) and (pointer:coarse){#overlay:after{content:'Swipe ← → to dodge • Tap or swipe ↑ to jump';position:absolute;bottom:12px;color:rgba(255,255,255,.35);font-size:.58rem}}
 .touch-device #ui{display:flex!important;visibility:visible!important}
-.touch-device #mobileControls{display:flex!important;visibility:visible!important}
